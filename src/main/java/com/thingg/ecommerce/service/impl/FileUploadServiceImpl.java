@@ -48,13 +48,18 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public void deleteFile(String imgUrl) {
-        String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
-        DeleteObjectRequest request = DeleteObjectRequest
-                .builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build();
-        s3Client.deleteObject(request);
+    public boolean deleteFile(String imgUrl) {
+        try {
+            String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+            DeleteObjectRequest request = DeleteObjectRequest
+                    .builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .build();
+            s3Client.deleteObject(request);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

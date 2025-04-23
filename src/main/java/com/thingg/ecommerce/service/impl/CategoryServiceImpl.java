@@ -4,11 +4,14 @@ import com.thingg.ecommerce.entities.CategoryEntity;
 import com.thingg.ecommerce.io.CategoryRequest;
 import com.thingg.ecommerce.io.CategoryResponse;
 import com.thingg.ecommerce.repositories.CategoryRepository;
+import com.thingg.ecommerce.repositories.ItemRepository;
 import com.thingg.ecommerce.service.CategoryService;
 import com.thingg.ecommerce.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final FileUploadService fileUploadService;
+    private final ItemRepository itemRepository;
 
     @Override
     public CategoryResponse add(CategoryRequest request, MultipartFile file) {
@@ -41,19 +45,25 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(String categoryId) {
         CategoryEntity existingCategory = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found: " + categoryId));
-        fileUploadService.deleteFile(existingCategory.getImgUrl());
-        categoryRepository.delete(existingCategory);
+        boolean isDeleted = fileUploadService.deleteFile(existingCategory.getImgUrl());
+        if (isDeleted) {
+            categoryRepository.delete(existingCategory);
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to delete file");
+        }
     }
 
-    private CategoryResponse convertToResponse(CategoryEntity newCategoryEntity) {
+    private CategoryResponse convertToResponse(CategoryEntity newCategory) {
+        Integer itemsCount = itemRepository.countByCategoryId(newCategory.getId());
         return CategoryResponse.builder()
-                .categoryId(newCategoryEntity.getCategoryId())
-                .name(newCategoryEntity.getName())
-                .description(newCategoryEntity.getDescription())
-                .bgColor(newCategoryEntity.getBgColor())
-                .imgUrl(newCategoryEntity.getImgUrl())
-                .createdAt(newCategoryEntity.getCreatedAt())
-                .updatedAt(newCategoryEntity.getUpdatedAt())
+                .categoryId(newCategory.getCategoryId())
+                .name(newCategory.getName())
+                .description(newCategory.getDescription())
+                .bgColor(newCategory.getBgColor())
+                .imgUrl(newCategory.getImgUrl())
+                .createdAt(newCategory.getCreatedAt())
+                .updatedAt(newCategory.getUpdatedAt())
+                .items(itemsCount)
                 .build();
     }
 
