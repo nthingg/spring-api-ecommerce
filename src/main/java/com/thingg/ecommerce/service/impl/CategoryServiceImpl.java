@@ -1,6 +1,6 @@
 package com.thingg.ecommerce.service.impl;
 
-import com.thingg.ecommerce.entities.Category;
+import com.thingg.ecommerce.entities.CategoryEntity;
 import com.thingg.ecommerce.io.CategoryRequest;
 import com.thingg.ecommerce.io.CategoryResponse;
 import com.thingg.ecommerce.repositories.CategoryRepository;
@@ -23,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse add(CategoryRequest request, MultipartFile file) {
         String imgUrl = fileUploadService.uploadFile(file);
-        Category newCategory = convertToEntity(request);
+        CategoryEntity newCategory = convertToEntity(request);
         newCategory.setImgUrl(imgUrl);
         newCategory = categoryRepository.save(newCategory);
         return convertToResponse(newCategory);
@@ -39,26 +39,26 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(String categoryId) {
-        Category existingCategory = categoryRepository.findByCategoryId(categoryId)
+        CategoryEntity existingCategory = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found: " + categoryId));
         fileUploadService.deleteFile(existingCategory.getImgUrl());
         categoryRepository.delete(existingCategory);
     }
 
-    private CategoryResponse convertToResponse(Category newCategory) {
+    private CategoryResponse convertToResponse(CategoryEntity newCategoryEntity) {
         return CategoryResponse.builder()
-                .categoryId(newCategory.getCategoryId())
-                .name(newCategory.getName())
-                .description(newCategory.getDescription())
-                .bgColor(newCategory.getBgColor())
-                .imgUrl(newCategory.getImgUrl())
-                .createdAt(newCategory.getCreatedAt())
-                .updatedAt(newCategory.getUpdatedAt())
+                .categoryId(newCategoryEntity.getCategoryId())
+                .name(newCategoryEntity.getName())
+                .description(newCategoryEntity.getDescription())
+                .bgColor(newCategoryEntity.getBgColor())
+                .imgUrl(newCategoryEntity.getImgUrl())
+                .createdAt(newCategoryEntity.getCreatedAt())
+                .updatedAt(newCategoryEntity.getUpdatedAt())
                 .build();
     }
 
-    private Category convertToEntity(CategoryRequest request) {
-        return Category.builder()
+    private CategoryEntity convertToEntity(CategoryRequest request) {
+        return CategoryEntity.builder()
                 .categoryId(UUID.randomUUID().toString())
                 .name(request.getName())
                 .description(request.getDescription())
