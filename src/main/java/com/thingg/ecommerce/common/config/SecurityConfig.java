@@ -1,6 +1,6 @@
-package com.thingg.ecommerce.config;
+package com.thingg.ecommerce.common.config;
 
-import com.thingg.ecommerce.filter.JwtRequestFilter;
+import com.thingg.ecommerce.common.filter.JwtRequestFilter;
 import com.thingg.ecommerce.service.impl.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/encode")
                         .permitAll()
-                        .requestMatchers("/categories", "/items").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/categories", "/items", "/orders", "/payments").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

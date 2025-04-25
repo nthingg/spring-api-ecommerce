@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> read() {
         return userRepository.findAll()
                 .stream()
+                .filter(user -> user.getRole().equalsIgnoreCase("ROLE_USER"))
                 .map(this::convertToResponse).toList();
     }
 

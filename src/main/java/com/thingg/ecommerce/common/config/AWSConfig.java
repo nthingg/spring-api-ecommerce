@@ -1,4 +1,4 @@
-package com.thingg.ecommerce.config;
+package com.thingg.ecommerce.common.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,7 @@
-package com.thingg.ecommerce.filter;
+package com.thingg.ecommerce.common.filter;
 
 import com.thingg.ecommerce.service.impl.AppUserDetailsService;
-import com.thingg.ecommerce.util.JwtUtil;
+import com.thingg.ecommerce.common.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

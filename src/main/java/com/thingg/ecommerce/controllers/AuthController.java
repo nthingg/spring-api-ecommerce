@@ -4,7 +4,7 @@ import com.thingg.ecommerce.io.AuthRequest;
 import com.thingg.ecommerce.io.AuthResponse;
 import com.thingg.ecommerce.service.UserService;
 import com.thingg.ecommerce.service.impl.AppUserDetailsService;
-import com.thingg.ecommerce.util.JwtUtil;
+import com.thingg.ecommerce.common.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;

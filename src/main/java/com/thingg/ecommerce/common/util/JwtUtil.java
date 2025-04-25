@@ -1,4 +1,4 @@
-package com.thingg.ecommerce.util;
+package com.thingg.ecommerce.common.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
