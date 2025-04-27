@@ -16,9 +16,12 @@ import com.thingg.ecommerce.repositories.OrderRepository;
 import com.thingg.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +34,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse create(OrderRequest request) {
-        System.out.println(request.getCustomerName());
-        System.out.println(request.getPaymentMethod());
         OrderEntity newOrder = convertToOrderEntity(request);
         PaymentDetails paymentDetails = new PaymentDetails();
-        paymentDetails.setStatus(newOrder.getPaymentMethod() == PaymentMethod.CASH ?
-                PaymentStatus.SUCCEEDED : PaymentStatus.PROCESSING);
+        paymentDetails.setStatus(PaymentStatus.SUCCEEDED);
         newOrder.setPaymentDetails(paymentDetails);
 
         List<OrderItemEntity> orderItems = request.getCartItems().stream()
@@ -106,33 +106,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse verifyPayment(PaymentVerificationRequest request) {
-        OrderEntity existingOrder = orderRepository.findByOrderId(request.getOrderId())
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        if (!verifyStripeSignature(request.getStripeChargeId())) {
-            throw new RuntimeException("Invalid or failed Stripe charge for ID: " + request.getStripeChargeId());
-        }
-        PaymentDetails paymentDetails = existingOrder.getPaymentDetails();
-        paymentDetails.setStripeChargeId(request.getStripeChargeId());
-        paymentDetails.setStripeSignature(request.getStripeSignature());
-        paymentDetails.setStatus(PaymentStatus.SUCCEEDED);
-
-        existingOrder = orderRepository.save(existingOrder);
-        return convertToResponse(existingOrder);
+    public Double sumSalesByDate(LocalDate date) {
+        return orderRepository.sumSalesByDate(date);
     }
 
-    private boolean verifyStripeSignature(String stripeChargeId) {
-        try {
-            Stripe.apiKey = stripeApiKey;
-            // Retrieve the charge from Stripe
-            Charge charge = Charge.retrieve(stripeChargeId);
-            // Verify the charge status
-            return "succeeded".equals(charge.getStatus());
-        } catch (StripeException e) {
-            // Log the error and return false if the charge cannot be verified
-            System.err.println("Failed to verify Stripe charge: " + e.getMessage());
-            return false;
-        }
+    @Override
+    public Long countByOrderDate(LocalDate date) {
+        return orderRepository.countByOrderDate(date);
+    }
+
+    @Override
+    public List<OrderResponse> findRecent() {
+        return orderRepository.findRecent(PageRequest.of(0,5))
+                .stream()
+                .map(this::convertToResponse).toList();
     }
 }

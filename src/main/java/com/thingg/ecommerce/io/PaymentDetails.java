@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentDetails {
     private String stripeChargeId;
-    private String stripeSignature;
     private PaymentStatus status;
 }

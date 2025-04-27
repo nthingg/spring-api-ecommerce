@@ -1,9 +1,9 @@
 package com.thingg.ecommerce.service;
 
-import com.thingg.ecommerce.io.StripeOrderRequest;
-import com.thingg.ecommerce.io.StripeOrderResponse;
+import com.thingg.ecommerce.io.StripeChargeRequest;
+import com.thingg.ecommerce.io.StripeChargeResponse;
 
 public interface PaymentService {
 
-    StripeOrderResponse create(StripeOrderRequest request);
+    StripeChargeResponse create(StripeChargeRequest request);
 }

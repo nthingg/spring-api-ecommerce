@@ -4,6 +4,7 @@ import com.thingg.ecommerce.io.OrderRequest;
 import com.thingg.ecommerce.io.OrderResponse;
 import com.thingg.ecommerce.io.PaymentVerificationRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OrderService {
@@ -13,5 +14,9 @@ public interface OrderService {
 
     List<OrderResponse> readLatest();
 
-    OrderResponse verifyPayment(PaymentVerificationRequest request);
+    Double sumSalesByDate(LocalDate date);
+
+    Long countByOrderDate(LocalDate date);
+
+    List<OrderResponse> findRecent();
 }

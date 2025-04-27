@@ -1,22 +1,15 @@
 package com.thingg.ecommerce.io;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class StripeOrderResponse {
-    private String id;
-    private String entity;
+public class StripeChargeRequest {
     private Integer amount;
     private String currency;
-    private String status;
-    private Date created_at;
-    private String receipt;
+    private String source;
+    private String description;
 }

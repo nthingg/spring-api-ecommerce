@@ -3,8 +3,8 @@ package com.thingg.ecommerce.service.impl;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
-import com.thingg.ecommerce.io.StripeOrderRequest;
-import com.thingg.ecommerce.io.StripeOrderResponse;
+import com.thingg.ecommerce.io.StripeChargeRequest;
+import com.thingg.ecommerce.io.StripeChargeResponse;
 import com.thingg.ecommerce.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class PaymentServiceImpl implements PaymentService {
     private String stripeApiKey;
 
     @Override
-    public StripeOrderResponse create(StripeOrderRequest request) {
+    public StripeChargeResponse create(StripeChargeRequest request) {
         try {
             // Initialize Stripe API with the secret key
             Stripe.apiKey = stripeApiKey;
@@ -32,7 +32,6 @@ public class PaymentServiceImpl implements PaymentService {
             chargeParams.put("currency", request.getCurrency());
             chargeParams.put("source", request.getSource());
             chargeParams.put("description", request.getDescription());
-            chargeParams.put("receipt_email", request.getReceipt());
 
             Charge charge = Charge.create(chargeParams);
 
@@ -42,8 +41,8 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    private StripeOrderResponse convertToResponse(Charge charge) {
-        return StripeOrderResponse.builder()
+    private StripeChargeResponse convertToResponse(Charge charge) {
+        return StripeChargeResponse.builder()
                 .id(charge.getId())
                 .entity("charge")
                 .amount(charge.getAmount().intValue())

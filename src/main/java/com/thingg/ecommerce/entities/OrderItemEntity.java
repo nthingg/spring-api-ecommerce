@@ -18,7 +18,7 @@ public class OrderItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "item_id")
     private String itemId;
 
     private String name;
@@ -26,6 +26,5 @@ public class OrderItemEntity {
     private Double price;
 
     private Integer quantity;
-
 
 }
